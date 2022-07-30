@@ -1,8 +1,8 @@
 # project
-master/twistd.*
-master/http.log
-master/secrets_files
-master/githubpoller-workdir
+twistd.*
+http.log
+secrets_files
+githubpoller-workdir
 
 # vim
 *~
