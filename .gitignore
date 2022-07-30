@@ -1,0 +1,10 @@
+# project
+master/twistd.*
+master/http.log
+master/secrets_files
+master/githubpoller-workdir
+
+# vim
+*~
+*.swp
+*.swo
