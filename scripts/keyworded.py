@@ -33,8 +33,7 @@ def eix_get_packages():
     sp = subprocess.Popen("eix --only-names --in-overlay gentoo".split(), stdout=subprocess.PIPE)
     out = sp.communicate()[0]
     assert sp.returncode == 0
-    #return out.decode('utf-8').splitlines()
-    return out.decode('utf-8').splitlines()[800:1000]
+    return out.decode('utf-8').splitlines()
 
 def markdown_to_html(text, html_file):
     with open (html_file, 'w') as f:
