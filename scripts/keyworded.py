@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import markdown
+from datetime import datetime
 
 def keyworded(atom):
     pkg = dict()
@@ -35,9 +36,12 @@ def eix_get_packages():
     assert sp.returncode == 0
     return out.decode('utf-8').splitlines()
 
-def markdown_to_html(text, html_file):
-    with open (html_file, 'w') as f:
-        html = markdown.markdown(text, extensions=['markdown.extensions.tables'])
+def markdown_to_html(filename, text, md_text):
+    with open (filename + '.txt', 'w') as f:
+        f.write(text)
+
+    with open (filename + '.html', 'w') as f:
+        html = markdown.markdown(md_text, extensions=['markdown.extensions.tables'])
         f.write(html)
 
 def main():
@@ -45,29 +49,37 @@ def main():
 | pakcage | keywords | eix-info |
 | ------- | -------- | -------- |
 '''
-    riscv_keyworded_doc = '#RISCV Keyworded Pakcage\n' + table_header
-    arm64_keyworded_doc = '#ARM64 Keyworded Pakcage\n' + table_header
-    none_keyworded_doc  = '#None  Keyworded Pakcage\n' + table_header
+    riscv_keyworded_md = '#RISCV Keyworded Pakcage\n' + table_header
+    arm64_keyworded_md = '#ARM64 Keyworded Pakcage\n' + table_header
+    none_keyworded_md  = '#None  Keyworded Pakcage\n' + table_header
+    riscv_keyworded_text = ''
+    arm64_keyworded_text = ''
+    none_keyworded_text  = ''
 
     for name in eix_get_packages():
         print('process %s' % name)
         pkg = keyworded(name)
-        atom_line = '| **%s** | <span style="color:blue">%s</span> | %s |\n' % (pkg['atom'], pkg['keywords'], pkg['eix-info'])
+        md_line = '| **%s** | <span style="color:blue">%s</span> | %s |\n' % (pkg['atom'], pkg['keywords'], pkg['eix-info'])
+        text_line = '%s\n' % pkg['atom']
+
         if pkg['riscv_keyworded']:
-            riscv_keyworded_doc += atom_line
+            riscv_keyworded_md += md_line
+            riscv_keyworded_text += text_line
         elif pkg['arm64_keyworded']:
-            arm64_keyworded_doc += atom_line
+            arm64_keyworded_md += md_line
+            arm64_keyworded_text += text_line
         else:
-            none_keyworded_doc += atom_line
+            none_keyworded_md += md_line
+            none_keyworded_text += text_line
 
     path = 'output'
     if os.path.isdir(path):
         shutil.rmtree(path)
     os.mkdir(path)
 
-    markdown_to_html(riscv_keyworded_doc, 'output/riscv.html')
-    markdown_to_html(arm64_keyworded_doc, 'output/arm64.html')
-    markdown_to_html(none_keyworded_doc,  'output/none.html')
+    markdown_to_html('output/riscv', riscv_keyworded_text, riscv_keyworded_md)
+    markdown_to_html('output/arm64', arm64_keyworded_text, arm64_keyworded_md)
+    markdown_to_html('output/none',  none_keyworded_text,  none_keyworded_md)
 
 if __name__ == "__main__":
     main()
