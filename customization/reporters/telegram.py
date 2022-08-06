@@ -4,9 +4,6 @@ import buildbot.reporters.telegram as telegram
 
 class CustomTelegramContact(telegram.TelegramContact):
 
-    def __init__(self, user, channel=None):
-        super().__init__(user, channel)
-
     def getSchedulerByName(self, name):
         schedulers = self.master.scheduler_manager.namedServices
         if name not in schedulers:
