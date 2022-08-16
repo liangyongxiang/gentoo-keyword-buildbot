@@ -1,0 +1,20 @@
+git_commit_current_state() {
+    [[ -z $GITIFY ]] && return
+    pushd "${S}"
+    if [ ! -d .git ]; then
+            git init .
+    fi
+    git config user.name "Yongxiang Liang"
+    git config user.email "tanekliang@gmail.com"
+    git add .
+    git commit -a -s -m "$@"
+    popd
+}
+
+post_src_unpack() {
+    git_commit_current_state "state after src_unpack()"
+}
+
+post_src_prepare() {
+    git_commit_current_state "state after src_prepare()"
+}
